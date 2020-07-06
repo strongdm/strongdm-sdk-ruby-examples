@@ -1,26 +1,12 @@
-# Copyright 2020 StrongDM Inc
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-require "yaml"
-require "strongdm"
-require "net/ldap"
-require "optparse"
-require "logger"
+require 'yaml'
+require 'strongdm'
+require 'net/ldap'
+require 'optparse'
+require 'logger'
 
 # This script reads from an LDAP server and does the following writes in StrongDM:
-# - creates roles for each configured organizational unit (OU)
-# - creates accounts for users in those OUs
+# - creates roles for each configured group
+# - creates accounts for users in those groups
 # - attaches those accounts to their corresponding roles
 # - grants resources to these roles based on configured filters
 # - detaches accounts from roles, deletes accounts, and deletes grants as necessary
@@ -28,31 +14,37 @@ require "logger"
 # IMPORTANT CAVEATS:
 # - this script can pull existing StrongDM users into its purview. then, if the
 #   user is removed from LDAP, it will delete the user.
-# - if you need to delete an entire role / OU, you'll need to do it manually.
+# - if you need to delete an entire role / group, you'll need to do it manually.
 #   this script does not touch roles that are not in the config file.
+# - accounts that are in a role not referenced by the config will cause the script
+#   to error.  You must manually place those accounts into No Role, or remove them
+#   from the LDAP groups.
 
 # Example config file:
 
-# organizationalUnits:
-#   - dn: OU=Other-OU,DC=j42,DC=xyz
-#     role: Other-OU
+# groups:
+#   - base: DC=j42,DC=xyz
+#     memberof: CN=Other,DC=j42,DC=xyz
+#     role: Other
 #     resources:
-#       - name:*Other-OU*
+#       - name:*Other*
 #       - name:*Multi*
-#   - dn: OU=admins,DC=j42,DC=xyz
+#   - base: DC=j42,DC=xyz
+#     memberof: CN=admins,DC=j42,DC=xyz
 #     role: admins
 #     resources:
 #       - name:*admins*
-#   - dn: OU=People,DC=j42,DC=xyz
+#   - base: DC=j42,DC=xyz
+#     memberof: CN=People,DC=j42,DC=xyz
 #     role: People
 #     resources:
 #       - name:*People*
 
-SDM_API_ACCESS_KEY = ENV.fetch("SDM_API_ACCESS_KEY", "")
-SDM_API_SECRET_KEY = ENV.fetch("SDM_API_SECRET_KEY", "")
-LDAP_HOST = ENV.fetch("LDAP_HOST", "")
-LDAP_BIND_DN = ENV.fetch("LDAP_BIND_DN", "")
-LDAP_PASSWORD = ENV.fetch("LDAP_PASSWORD", "")
+SDM_API_ACCESS_KEY = ENV.fetch('SDM_API_ACCESS_KEY', '')
+SDM_API_SECRET_KEY = ENV.fetch('SDM_API_SECRET_KEY', '')
+LDAP_HOST = ENV.fetch('LDAP_HOST', '')
+LDAP_BIND_DN = ENV.fetch('LDAP_BIND_DN', '')
+LDAP_PASSWORD = ENV.fetch('LDAP_PASSWORD', '')
 
 # gets the first item in a list or generator
 def first(attrib)
@@ -66,14 +58,14 @@ def first(attrib)
 end
 
 def ldap_sync
-  if SDM_API_ACCESS_KEY == "" || SDM_API_SECRET_KEY == "" || LDAP_BIND_DN == ""
-    puts "SDM_API_ACCESS_KEY, SDM_API_SECRET_KEY, and LDAP_BIND_DN must be set"
+  if SDM_API_ACCESS_KEY == '' || SDM_API_SECRET_KEY == '' || LDAP_BIND_DN == ''
+    puts 'SDM_API_ACCESS_KEY, SDM_API_SECRET_KEY, and LDAP_BIND_DN must be set'
     exit 1
   end
 
   plan = false
   verbose = false
-  configPath = "config.yml"
+  configPath = 'config.yml'
   OptionParser.new do |opts|
     opts.banner = "Usage ldapSync.rb [options]"
     opts.on("-p", "--plan", "calculate changes but do not apply them") do |p|
@@ -94,53 +86,53 @@ def ldap_sync
   end
 
   begin
-    sdmClient = SDM::Client.new(SDM_API_ACCESS_KEY, SDM_API_SECRET_KEY, host: "api.strongdmdev.com:443")
+    sdmClient = SDM::Client.new(SDM_API_ACCESS_KEY, SDM_API_SECRET_KEY, host: 'api.strongdm.com:443')
   rescue SDM::RPCError => ex
-    raise ex, "failed to create StrongDM client"
+    raise ex, 'failed to create StrongDM client'
   end
 
   ldap = Net::LDAP.new
   ldap.host = LDAP_HOST
   ldap.auth LDAP_BIND_DN, LDAP_PASSWORD
   if not ldap.bind
-    puts "failed to bind LDAP connection - authentication error"
+    puts 'failed to bind LDAP connection - authentication error'
     exit 1
   end
 
-  sdmRoles = {} # map of name to ID
-  sdmAccounts = {} # map of email to id
-  sdmResources = {} # map of ID to name
-  sdmAccountsById = {} # map of id to { :email, :firstName, :lastName }
-  sdmAccountsWithAttachments = {} # map of email to id of all accounts that are in the roles we're interested in
-  sdmAccountAttachments = {} # map of role name to list of emails
-  sdmRoleGrants = {} # map of role name to list of { :resourceId, :grantId }
+  sdmRoles = { } # map of name to ID
+  sdmAccounts = { } # map of email to id
+  sdmResources = { } # map of ID to name
+  sdmAccountsById = { } # map of id to { :email, :firstName, :lastName }
+  sdmAccountsWithAttachments = { } # map of email to id of all accounts that are in the roles we're interested in
+  sdmAccountAttachments = { } # map of role name to list of emails
+  sdmRoleGrants = { } # map of role name to list of { :resourceId, :grantId }
   ldapRoles = [] # list of names
-  ldapAccounts = {} # map of email to { :firstName, :lastName }
-  ldapAccountAttachments = {} # map of role name to list of emails
-  desiredRoleGrants = {} # map of role name to list of resource IDs
+  ldapAccounts = { } # map of email to { :firstName, :lastName }
+  ldapAccountAttachments = { } # map of role name to list of emails
+  desiredRoleGrants = { } # map of role name to list of resource IDs
 
   # get SDM accounts
-  sdmClient.accounts.list("").each do |account|
+  sdmClient.accounts.list('').each do |account|
     sdmAccounts[account.email] = account.id
     sdmAccountsById[account.id] = { :email => account.email, :firstName => account.first_name, :lastName => account.last_name }
   end
 
   # get SDM resources
-  sdmClient.resources.list("").each do |resource|
+  sdmClient.resources.list('').each do |resource|
     sdmResources[resource.id] = resource.name
   end
 
-  # loop through OUs
-  config["organizationalUnits"].each do |ou|
+  # loop through groups
+  config['groups'].each do |group|
 
-    # get SDM state for this OU
-    role = first(sdmClient.roles.list("name:?", ou["role"]))
+    # get SDM state for this group
+    role = first(sdmClient.roles.list('name:?', group['role']))
     if role
       sdmRoles[role.name] = role.id
 
       # get accounts attached to this role
       accountEmails = []
-      sdmClient.account_attachments.list("roleid:?", role.id).each do |attachment|
+      sdmClient.account_attachments.list('roleid:?', role.id).each do |attachment|
         sdmAccount = sdmAccountsById[attachment.account_id]
         email = sdmAccount[:email]
         sdmAccountsWithAttachments[email] = attachment.account_id
@@ -150,14 +142,14 @@ def ldap_sync
 
       # get resources granted to this role
       roleGrants = []
-      sdmClient.role_grants.list("roleid:?", role.id).each do |grant|
+      sdmClient.role_grants.list('roleid:?', role.id).each do |grant|
         roleGrants.push({ :resourceId => grant.resource_id, :grantId => grant.id })
       end
       sdmRoleGrants[role.name] = roleGrants
 
       # get resources that we want to grant to this role
-      filteredResources = {} # map of resource ID to true (to prevent duplicates)
-      filters = ou["resources"] # list of filter strings
+      filteredResources = { } # map of resource ID to true (to prevent duplicates)
+      filters = group['resources'] # list of filter strings
       if filters
         filters.each do |filter|
           sdmClient.resources.list(filter).each do |resource|
@@ -168,17 +160,20 @@ def ldap_sync
       end
     end
 
-    # get LDAP state for this OU
-    ldapRoles.push(ou["role"].to_s)
+    # get LDAP state for this group
+    ldapRoles.push(group['role'].to_s)
     roleAccounts = []
-    ldap.search(:base => ou["dn"], :filter => Net::LDAP::Filter.eq("objectclass", "user"), :return_result => false) do |entry|
+    f = Net::LDAP::Filter.join(
+      Net::LDAP::Filter.eq('objectclass', 'user'),
+      Net::LDAP::Filter.eq('memberof',group['memberof']))
+    ldap.search(:base => group['base'], :filter => f, :return_result => false) do |entry|
       ldapAccounts[first(entry.mail).to_s] = {
         :firstName => first(entry.givenname).to_s,
-        :lastName => first(entry.sn).to_s,
+        :lastName => first(entry['sn']).to_s,
       }
       roleAccounts.push(first(entry.mail).to_s)
     end
-    ldapAccountAttachments[ou["role"].to_s] = roleAccounts
+    ldapAccountAttachments[group['role'].to_s] = roleAccounts
   end
 
   # compute diff
@@ -234,7 +229,7 @@ def ldap_sync
       report[:deleteAccountAttachments].push({ :role => roleName, :account => email })
       next if plan
       accountId = sdmAccounts[email]
-      attachment = first(sdmClient.account_attachments.list("accountid:? roleid:?", accountId, roleId))
+      attachment = first(sdmClient.account_attachments.list('accountid:? roleid:?', accountId, roleId))
       next if not attachment # already deleted by the deleteAccounts step
       sdmClient.account_attachments.delete(attachment.id)
     end
@@ -257,14 +252,14 @@ def ldap_sync
     roleGrants.each do |grant|
       next if desired and desired.include? grant[:resourceId]
       resourceName = sdmResources[grant[:resourceId]]
-      report[:deleteRoleGrants].push({ :role => roleName, :resource => resourceName })
+      report[:deleteRoleGrants].push({ :role => roleName, :resource => resourceName})
       next if plan
       sdmClient.role_grants.delete(grant[:grantId])
     end
   end
   # createRoleGrants
   desiredRoleGrants.each do |roleName, roleGrants|
-    roleId = sdmRoles[roleName]
+    roleId  = sdmRoles[roleName]
     existing = sdmRoleGrants[roleName]
     roleGrants.each do |resourceId|
       next if existing and existing.find { |existingGrant| existingGrant[:resourceId] == resourceId }
