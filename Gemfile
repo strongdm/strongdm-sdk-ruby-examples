@@ -1,3 +1,5 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "strongdm"
+ruby '2.6.6'
+
+gem 'strongdm'
