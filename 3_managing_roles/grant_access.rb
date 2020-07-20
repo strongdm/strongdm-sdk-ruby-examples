@@ -24,65 +24,76 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
+
+# Create the SDM client
 client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
 
-# Create a Postgres datasource
-postgres = SDM::Postgres.new(
-    name: 'Example Postgres Datasource',
-    hostname: 'example.strongdm.com',
-    port: 5432,
-    username: 'example',
-    password: 'example',
-    database: 'example'
-  )
-  
-  postgres_response = client.resources.create(postgres)
-  
-  puts 'Successfully created Postgres datasource.'
-  puts "  Name: #{postgres_response.resource.name}"
-  puts "  ID: #{postgres_response.resource.id}"
+# Create a 30 second deadline
+deadline = Time.now.utc + 30
 
-# Create a role
+# Define a Postgres datasource
+postgres = SDM::Postgres.new(
+  name: 'Example Postgres Datasource',
+  hostname: 'example.strongdm.com',
+  port: 5432,
+  username: 'example',
+  password: 'example',
+  database: 'example'
+)
+
+# Create the datasource
+postgres_response = client.resources.create(postgres, deadline: deadline)
+
+puts 'Successfully created Postgres datasource.'
+puts "    ID: #{postgres_response.resource.id}"
+puts "  Name: #{postgres_response.resource.name}"
+
+# Define a role
 role = SDM::Role.new(
   name: 'example role'
 )
 
-role_response = client.roles.create(role)
+# Create the role
+role_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created role.'
-puts "  ID: #{role_response.role.id}"
+puts "    ID: #{role_response.role.id}"
+puts "  Name: #{role_response.role.name}"
 
-# Create a role grant
-grant = SDM::RoleGrant.new(
-    resource_id: postgres_response.resource.id,
-    role_id: role_response.role.id
+# Define a role grant
+role_grant = SDM::RoleGrant.new(
+  resource_id: postgres_response.resource.id,
+  role_id: role_response.role.id
 )
 
-grant_response = client.role_grants.create(grant)
+# Create the role grant
+grant_response = client.role_grants.create(role_grant, deadline: deadline)
 
 puts 'Successfully created role grant.'
 puts "  ID: #{grant_response.role_grant.id}"
 
-# Create a user
+# Define a user
 user = SDM::User.new(
-    email: 'example@strongdm.com',
-    first_name: 'example',
-    last_name: 'example'
-  )
-  
-  user_response = client.accounts.create(user)
-  
-  puts 'Successfully created user.'
-  puts "  Email: #{user_response.account.email}"
-  puts "  ID: #{user_response.account.id}"
-
-# Attach the user to the role
-attachment = SDM::AccountAttachment.new(
-  account_id: user_response.account.id,
-  role_id: role_response.role.id
+  email: 'example@example.com',
+  first_name: 'example',
+  last_name: 'example'
 )
 
-attachment_response = client.account_attachments.create(attachment)
+# Create a user
+user_response = client.accounts.create(user, deadline: deadline)
 
-puts 'Successfully created account attachment.'
-puts "  ID: #{attachment_response.account_attachment.id}"
+puts 'Successfully created user.'
+puts "     ID: #{user_response.account.id}"
+puts "  Email: #{user_response.account.email}"
+
+# Define an Account grant
+account_grant = SDM::AccountGrant.new(
+  account_id: user_response.account.id,
+  resource_id: postgres_response.resource.id
+)
+
+# Create the grant
+grant_response = client.account_grants.create(account_grant, deadline: deadline)
+
+puts 'Successfully created account grant.'
+puts "  ID: #{grant_response.account_grant.id}"

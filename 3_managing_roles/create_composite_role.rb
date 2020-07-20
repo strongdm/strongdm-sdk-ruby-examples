@@ -24,36 +24,46 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
+
+# Create the SDM client
 client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
 
-# Create a composite role
+# Create a 30 second deadline
+deadline = Time.now.utc + 30
+
+# Define a composite role
 role = SDM::Role.new(
   name: 'example composite role',
   composite: true
 )
 
-composite_response = client.roles.create(role)
+# Create the composite role
+composite_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created composite role.'
-puts "  ID: #{composite_response.role.id}"
+puts "    ID: #{composite_response.role.id}"
+puts "  Name: #{composite_response.role.name}"
 
-# Create a role
+# Define a role
 role = SDM::Role.new(
   name: 'example role'
 )
 
-role_response = client.roles.create(role)
+# Create the role
+role_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created role.'
-puts "  ID: #{role_response.role.id}"
+puts "    ID: #{role_response.role.id}"
+puts "  Name: #{role_response.role.name}"
 
-# Attach the role to the composite role
+# Define the role attachment
 attachment = SDM::RoleAttachment.new(
   composite_role_id: composite_response.role.id,
   attached_role_id: role_response.role.id
 )
 
-attachment_response = client.role_attachments.create(attachment)
+# Create the role attachment
+attachment_response = client.role_attachments.create(attachment, deadline: deadline)
 
 puts 'Successfully created role attachment.'
 puts "  ID: #{attachment_response.role_attachment.id}"
