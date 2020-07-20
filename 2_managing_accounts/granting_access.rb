@@ -24,21 +24,28 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
+
+# Create the SDM client
 client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
 
+# Create a 30 second deadline
+deadline = Time.now.utc + 30
+
+# Define a user
 user = SDM::User.new(
   email: 'example@example.com',
   first_name: 'example',
   last_name: 'example'
 )
 
-user_response = client.accounts.create(user)
+# Create the user
+user_response = client.accounts.create(user, deadline: deadline)
 
 puts 'Successfully created user.'
+puts "     ID: #{user_response.account.id}"
 puts "  Email: #{user_response.account.email}"
-puts "  ID: #{user_response.account.id}"
 
-# Create a Postgres datasource
+# Define a Postgres datasource
 postgres = SDM::Postgres.new(
   name: 'Example Postgres Datasource',
   hostname: 'example.strongdm.com',
@@ -48,19 +55,21 @@ postgres = SDM::Postgres.new(
   database: 'example'
 )
 
-postgres_response = client.resources.create(postgres)
+# Create the datasource
+postgres_response = client.resources.create(postgres, deadline: deadline)
 
 puts 'Successfully created Postgres datasource.'
+puts "    ID: #{postgres_response.resource.id}"
 puts "  Name: #{postgres_response.resource.name}"
-puts "  ID: #{postgres_response.resource.id}"
 
-# Create an Account grant
+# Define an Account grant
 grant = SDM::AccountGrant.new(
   account_id: user_response.account.id,
   resource_id: postgres_response.resource.id
 )
 
-grant_response = client.account_grants.create(grant)
+# Create the grant
+grant_response = client.account_grants.create(grant, deadline: deadline)
 
 puts 'Successfully created account grant.'
 puts "  ID: #{grant_response.account_grant.id}"

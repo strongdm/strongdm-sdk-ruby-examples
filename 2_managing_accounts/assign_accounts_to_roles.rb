@@ -24,38 +24,47 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
+
+# Create the SDM client
 client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
 
-# Create a user
+# Create a 30 second deadline
+deadline = Time.now.utc + 30
+
+# Define a role
+role = SDM::Role.new(
+  name: 'example role'
+)
+
+# Create the role
+role_response = client.roles.create(role, deadline: deadline)
+
+puts 'Successfully created role.'
+puts "    ID: #{role_response.role.id}"
+puts "  Name: #{role_response.role.name}"
+
+# Define a user
 user = SDM::User.new(
   email: 'example@strongdm.com',
   first_name: 'example',
   last_name: 'example'
 )
 
-user_response = client.accounts.create(user)
+# Create the user
+user_response = client.accounts.create(user, deadline: deadline)
 
 puts 'Successfully created user.'
+puts "     ID: #{user_response.account.id}"
 puts "  Email: #{user_response.account.email}"
-puts "  ID: #{user_response.account.id}"
 
-# Create a role
-role = SDM::Role.new(
-  name: 'example role'
-)
-
-role_response = client.roles.create(role)
-
-puts 'Successfully created role.'
-puts "  ID: #{role_response.role.id}"
-
-# Attach the user to the role
-grant = SDM::AccountAttachment.new(
+# Define an account attachment
+attachment = SDM::AccountAttachment.new(
   account_id: user_response.account.id,
   role_id: role_response.role.id
 )
 
-attachment_response = client.account_attachments.create(grant)
+# Create the attachment
+attachment_response = client.account_attachments.create(attachment)
 
 puts 'Successfully created account attachment.'
 puts "  ID: #{attachment_response.account_attachment.id}"

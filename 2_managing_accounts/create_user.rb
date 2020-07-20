@@ -24,16 +24,23 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
+
+# Create the SDM client
 client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
 
+# Create a 30 second deadline
+deadline = Time.now + 30
+
+# Define a user
 user = SDM::User.new(
   email: 'example@example.com',
   first_name: 'example',
   last_name: 'example'
 )
 
-response = client.accounts.create(user)
+# Create a user
+response = client.accounts.create(user, deadline: deadline)
 
 puts 'Successfully created user.'
+puts "     ID: #{response.account.id}"
 puts "  Email: #{response.account.email}"
-puts "  ID: #{response.account.id}"
