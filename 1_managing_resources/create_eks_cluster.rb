@@ -24,9 +24,14 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
+
+# Create the SDM client
 client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
 
-# Create an EKS Cluster
+# Create a 30 second deadline
+deadline = Time.now.utc + 30
+
+# Define an EKS Cluster
 certificate_authority = "-----BEGIN CERTIFICATE-----
 MIICpjCCAY4CCQCYJT6s+JVzSTANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDDApr
 dWJlcm5ldGVzMB4XDTIwMDcxNTE0MjgzN1oXDTIxMDcxNTE0MjgzN1owFTETMBEG
@@ -58,8 +63,9 @@ eks_cluster = SDM::AmazonEKS.new(
   healthcheck_namespace: 'default'
 )
 
-response = client.resources.create(eks_cluster)
+# Create the cluster
+response = client.resources.create(eks_cluster, deadline: deadline)
 
 puts 'Successfully created EKS cluster.'
+puts "    ID: #{response.resource.id}"
 puts "  Name: #{response.resource.name}"
-puts "  ID: #{response.resource.id}"

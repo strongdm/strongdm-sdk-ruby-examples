@@ -24,9 +24,14 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
+
+# Create the SDM client
 client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
 
-# Create a RDP server
+# Create a 30 second deadline
+deadline = Time.now.utc + 30
+
+# Define a RDP server
 rdp_server = SDM::RDP.new(
   name: 'Example RDP Server',
   hostname: 'example.strongdm.com',
@@ -35,8 +40,9 @@ rdp_server = SDM::RDP.new(
   port: 3389
 )
 
-response = client.resources.create(rdp_server)
+# Create the server
+response = client.resources.create(rdp_server, deadline: deadline)
 
 puts 'Successfully created RDP server.'
+puts "    ID: #{response.resource.id}"
 puts "  Name: #{response.resource.name}"
-puts "  ID: #{response.resource.id}"
