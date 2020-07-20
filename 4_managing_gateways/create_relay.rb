@@ -31,7 +31,7 @@ deadline = Time.now.utc + 30
 
 # Define a relay
 relay = SDM::Relay.new(
-    name: "example-relay"
+  name: 'example-relay'
 )
 
 # Create the relay
