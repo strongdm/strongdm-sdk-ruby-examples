@@ -64,7 +64,7 @@ attachment = SDM::AccountAttachment.new(
 )
 
 # Create the attachment
-attachment_response = client.account_attachments.create(attachment)
+attachment_response = client.account_attachments.create(attachment, deadline: deadline)
 
 puts 'Successfully created account attachment.'
 puts "  ID: #{attachment_response.account_attachment.id}"
