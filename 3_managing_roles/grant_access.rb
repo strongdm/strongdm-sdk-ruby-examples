@@ -87,14 +87,14 @@ puts 'Successfully created user.'
 puts "     ID: #{user_response.account.id}"
 puts "  Email: #{user_response.account.email}"
 
-# Define an Account grant
-account_grant = SDM::AccountGrant.new(
+# Define an Account attachment
+account_attachment = SDM::AccountAttachment.new(
   account_id: user_response.account.id,
-  resource_id: postgres_response.resource.id
+  role_id: role_response.role.id
 )
 
-# Create the grant
-grant_response = client.account_grants.create(account_grant, deadline: deadline)
+# Create the attachment
+attachment_response = client.account_attachments.create(account_attachment, deadline: deadline)
 
-puts 'Successfully created account grant.'
-puts "  ID: #{grant_response.account_grant.id}"
+puts 'Successfully created account attachment.'
+puts "  ID: #{attachment_response.account_attachment.id}"
