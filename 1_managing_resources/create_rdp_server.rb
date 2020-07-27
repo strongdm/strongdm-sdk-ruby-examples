@@ -37,7 +37,8 @@ rdp_server = SDM::RDP.new(
   hostname: 'example.strongdm.com',
   username: 'example',
   password: 'example',
-  port: 3389
+  port: 3389,
+  port_override: 19999
 )
 
 # Create the server
