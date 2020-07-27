@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-require "strongdm"
+require 'strongdm'
 
-client = SDM::Client.new(ENV["SDM_API_ACCESS_KEY"], ENV["SDM_API_SECRET_KEY"])
-users = client.accounts.list("")
-users.each { |user|
+client = SDM::Client.new(ENV['SDM_API_ACCESS_KEY'], ENV['SDM_API_SECRET_KEY'])
+users = client.accounts.list('')
+users.each do |user|
   p user
-}
+end

@@ -33,8 +33,8 @@ deadline = Time.now.utc + 30
 
 # Define a gateway
 gateway = SDM::Gateway.new(
-    name: "example-gateway",
-    listen_address: "gateway.example.com:5555",
+  name: 'example-gateway',
+  listen_address: 'gateway.example.com:5555'
 )
 
 # Create the gateway
