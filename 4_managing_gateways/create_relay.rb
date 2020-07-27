@@ -24,7 +24,7 @@ if api_access_key.nil? || api_secret_key.nil?
   puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
   return
 end
-client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
+client = SDM::Client.new(api_access_key, api_secret_key)
 
 # Create a 30 second deadline
 deadline = Time.now.utc + 30

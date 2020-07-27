@@ -26,7 +26,7 @@ if api_access_key.nil? || api_secret_key.nil?
 end
 
 # Create the SDM client
-client = SDM::Client.new(api_access_key, api_secret_key, host: 'api.strongdmdev.com:443')
+client = SDM::Client.new(api_access_key, api_secret_key)
 
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
@@ -38,7 +38,8 @@ postgres = SDM::Postgres.new(
   port: 5432,
   username: 'example',
   password: 'example',
-  database: 'example'
+  database: 'example',
+  port_override: 19999
 )
 
 # Create the datasource
