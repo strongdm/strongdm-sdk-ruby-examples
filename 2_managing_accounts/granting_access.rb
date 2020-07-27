@@ -53,7 +53,7 @@ postgres = SDM::Postgres.new(
   username: 'example',
   password: 'example',
   database: 'example',
-  port_override: 19999,
+  port_override: 19_999
 )
 
 # Create the datasource
