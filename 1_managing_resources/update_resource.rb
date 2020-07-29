@@ -54,7 +54,7 @@ get_response = client.resources.get(create_response.resource.id, deadline: deadl
 resource = get_response.resource
 
 # Update the fields to change
-resource.name = "Updated Example Name"
+resource.name = "Example Name Updated"
 
 # Update the datasource
 update_response = client.resources.update(resource, deadline: deadline)
