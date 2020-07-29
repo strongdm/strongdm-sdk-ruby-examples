@@ -38,6 +38,6 @@ relay = SDM::Relay.new(
 node_response = client.nodes.create(relay, deadline: deadline)
 
 puts 'Successfully created gateway.'
-puts "     ID: #{node_response.node.id}"
-puts "   Name: #{node_response.node.name}"
-puts "  Token: #{node_response.token}"
+puts "\tID: #{node_response.node.id}"
+puts "\tName: #{node_response.node.name}"
+puts "\tToken: #{node_response.token}"

@@ -67,5 +67,5 @@ eks_cluster = SDM::AmazonEKS.new(
 response = client.resources.create(eks_cluster, deadline: deadline)
 
 puts 'Successfully created EKS cluster.'
-puts "    ID: #{response.resource.id}"
-puts "  Name: #{response.resource.name}"
+puts "\tID: #{response.resource.id}"
+puts "\tName: #{response.resource.name}"

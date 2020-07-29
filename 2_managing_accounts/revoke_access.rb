@@ -41,8 +41,8 @@ user = SDM::User.new(
 # Create the user
 user_response = client.accounts.create(user, deadline: deadline)
 puts 'Successfully created user.'
-puts "     ID: #{user_response.account.id}"
-puts "  Email: #{user_response.account.email}"
+puts "\tID: #{user_response.account.id}"
+puts "\tEmail: #{user_response.account.email}"
 
 # Define a Postgres datasource
 postgres = SDM::Postgres.new(
@@ -58,8 +58,8 @@ postgres = SDM::Postgres.new(
 # Create the datasource
 postgres_response = client.resources.create(postgres, deadline: deadline)
 puts 'Successfully created Postgres datasource.'
-puts "    ID: #{postgres_response.resource.id}"
-puts "  Name: #{postgres_response.resource.name}"
+puts "\tID: #{postgres_response.resource.id}"
+puts "\tName: #{postgres_response.resource.name}"
 
 # Define an Account grant
 grant = SDM::AccountGrant.new(
@@ -70,7 +70,7 @@ grant = SDM::AccountGrant.new(
 # Create the grant
 grant_response = client.account_grants.create(grant, deadline: deadline)
 puts 'Successfully created account grant.'
-puts "  ID: #{grant_response.account_grant.id}"
+puts "\tID: #{grant_response.account_grant.id}"
 
 # Delete the grant
 client.account_grants.delete(grant_response.account_grant.id, deadline: deadline)

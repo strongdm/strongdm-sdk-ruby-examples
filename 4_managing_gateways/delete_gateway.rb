@@ -40,9 +40,9 @@ gateway = SDM::Gateway.new(
 # Create the gateway
 create_response = client.nodes.create(gateway, deadline: deadline)
 puts 'Successfully created gateway.'
-puts "     ID: #{create_response.node.id}"
-puts "   Name: #{create_response.node.name}"
-puts "  Token: #{create_response.token}"
+puts "\tID: #{create_response.node.id}"
+puts "\tName: #{create_response.node.name}"
+puts "\tToken: #{create_response.token}"
 
 # Delete the gateway
 client.nodes.delete(create_response.node.id, deadline: deadline)

@@ -41,8 +41,8 @@ role = SDM::Role.new(
 composite_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created composite role.'
-puts "    ID: #{composite_response.role.id}"
-puts "  Name: #{composite_response.role.name}"
+puts "\tID: #{composite_response.role.id}"
+puts "\tName: #{composite_response.role.name}"
 
 # Define a role
 role = SDM::Role.new(
@@ -53,8 +53,8 @@ role = SDM::Role.new(
 role_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created role.'
-puts "    ID: #{role_response.role.id}"
-puts "  Name: #{role_response.role.name}"
+puts "\tID: #{role_response.role.id}"
+puts "\tName: #{role_response.role.name}"
 
 # Define the role attachment
 attachment = SDM::RoleAttachment.new(
@@ -66,4 +66,4 @@ attachment = SDM::RoleAttachment.new(
 attachment_response = client.role_attachments.create(attachment, deadline: deadline)
 
 puts 'Successfully created role attachment.'
-puts "  ID: #{attachment_response.role_attachment.id}"
+puts "\tID: #{attachment_response.role_attachment.id}"

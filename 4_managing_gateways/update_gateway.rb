@@ -40,9 +40,9 @@ gateway = SDM::Gateway.new(
 # Create the gateway
 create_response = client.nodes.create(gateway, deadline: deadline)
 puts 'Successfully created gateway.'
-puts "     ID: #{create_response.node.id}"
-puts "   Name: #{create_response.node.name}"
-puts "  Token: #{create_response.token}"
+puts "\tID: #{create_response.node.id}"
+puts "\tName: #{create_response.node.name}"
+puts "\tToken: #{create_response.token}"
 
 # Get the gateway
 get_response = client.nodes.get(create_response.node.id, deadline: deadline)
@@ -54,5 +54,5 @@ gateway.name = "example-gateway-updated"
 # Update the gateway
 update_response = client.nodes.update(gateway, deadline: deadline)
 puts 'Successfully updated gateway.'
-puts "     ID: #{update_response.node.id}"
-puts "   Name: #{update_response.node.name}"
+puts "\tID: #{update_response.node.id}"
+puts "\tName: #{update_response.node.name}"

@@ -43,6 +43,6 @@ ssh_server = SDM::SSH.new(
 response = client.resources.create(ssh_server, deadline: deadline)
 
 puts 'Successfully created SSH server.'
-puts "          ID: #{response.resource.id}"
-puts "        Name: #{response.resource.name}"
-puts "  Public key: #{response.resource.public_key}"
+puts "\tID: #{response.resource.id}"
+puts "\tName: #{response.resource.name}"
+puts "\tPublic key: #{response.resource.public_key}"

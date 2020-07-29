@@ -42,5 +42,5 @@ user = SDM::User.new(
 response = client.accounts.create(user, deadline: deadline)
 
 puts 'Successfully created user.'
-puts "     ID: #{response.account.id}"
-puts "  Email: #{response.account.email}"
+puts "\tID: #{response.account.id}"
+puts "\tEmail: #{response.account.email}"

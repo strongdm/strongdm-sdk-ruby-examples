@@ -41,8 +41,8 @@ user = SDM::User.new(
 # Create a user
 response = client.accounts.create(user, deadline: deadline)
 puts 'Successfully created user.'
-puts "     ID: #{response.account.id}"
-puts "  Email: #{response.account.email}"
+puts "\tID: #{response.account.id}"
+puts "\tEmail: #{response.account.email}"
 
 # Delete the account
 client.accounts.delete(response.account.id, deadline: deadline)

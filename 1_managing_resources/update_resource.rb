@@ -46,8 +46,8 @@ postgres = SDM::Postgres.new(
 create_response = client.resources.create(postgres, deadline: deadline)
 
 puts 'Successfully created Postgres datasource.'
-puts "    ID: #{create_response.resource.id}"
-puts "  Name: #{create_response.resource.name}"
+puts "\tID: #{create_response.resource.id}"
+puts "\tName: #{create_response.resource.name}"
 
 # Load the datasource to update
 get_response = client.resources.get(create_response.resource.id, deadline: deadline)
@@ -60,5 +60,5 @@ resource.name = "Example Name Updated"
 update_response = client.resources.update(resource, deadline: deadline)
 
 puts 'Successfully updated Postgres datasource.'
-puts "    ID: #{update_response.resource.id}"
-puts "  Name: #{update_response.resource.name}"
+puts "\tID: #{update_response.resource.id}"
+puts "\tName: #{update_response.resource.name}"

@@ -40,5 +40,5 @@ role = SDM::Role.new(
 role_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created role.'
-puts "    ID: #{role_response.role.id}"
-puts "  Name: #{role_response.role.name}"
+puts "\tID: #{role_response.role.id}"
+puts "\tName: #{role_response.role.name}"

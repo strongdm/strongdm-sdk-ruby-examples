@@ -40,8 +40,8 @@ role = SDM::Role.new(
 role_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created role.'
-puts "    ID: #{role_response.role.id}"
-puts "  Name: #{role_response.role.name}"
+puts "\tID: #{role_response.role.id}"
+puts "\tName: #{role_response.role.name}"
 
 # Define a user
 user = SDM::User.new(
@@ -54,8 +54,8 @@ user = SDM::User.new(
 user_response = client.accounts.create(user, deadline: deadline)
 
 puts 'Successfully created user.'
-puts "     ID: #{user_response.account.id}"
-puts "  Email: #{user_response.account.email}"
+puts "\tID: #{user_response.account.id}"
+puts "\tEmail: #{user_response.account.email}"
 
 # Define an account attachment
 attachment = SDM::AccountAttachment.new(
@@ -67,4 +67,4 @@ attachment = SDM::AccountAttachment.new(
 attachment_response = client.account_attachments.create(attachment, deadline: deadline)
 
 puts 'Successfully created account attachment.'
-puts "  ID: #{attachment_response.account_attachment.id}"
+puts "\tID: #{attachment_response.account_attachment.id}"

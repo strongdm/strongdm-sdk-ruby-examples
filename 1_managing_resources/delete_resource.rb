@@ -46,8 +46,8 @@ postgres = SDM::Postgres.new(
 create_response = client.resources.create(postgres, deadline: deadline)
 
 puts 'Successfully created Postgres datasource.'
-puts "    ID: #{create_response.resource.id}"
-puts "  Name: #{create_response.resource.name}"
+puts "\tID: #{create_response.resource.id}"
+puts "\tName: #{create_response.resource.name}"
 
 # Delete the datasource
 client.resources.delete(create_response.resource.id, deadline: deadline)

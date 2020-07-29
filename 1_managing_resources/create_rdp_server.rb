@@ -45,5 +45,5 @@ rdp_server = SDM::RDP.new(
 response = client.resources.create(rdp_server, deadline: deadline)
 
 puts 'Successfully created RDP server.'
-puts "    ID: #{response.resource.id}"
-puts "  Name: #{response.resource.name}"
+puts "\tID: #{response.resource.id}"
+puts "\tName: #{response.resource.name}"

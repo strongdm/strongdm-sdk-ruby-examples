@@ -41,8 +41,8 @@ user = SDM::User.new(
 # Create a user
 create_response = client.accounts.create(user, deadline: deadline)
 puts 'Successfully created user.'
-puts "     ID: #{create_response.account.id}"
-puts "  Email: #{create_response.account.email}"
+puts "\tID: #{create_response.account.id}"
+puts "\tEmail: #{create_response.account.email}"
 
 # Get the account
 get_response = client.accounts.get(create_response.account.id, deadline: deadline)
@@ -54,5 +54,5 @@ account.suspended = true
 # Update the account
 update_response = client.accounts.update(account, deadline: deadline)
 puts 'Successfully updated account.'
-puts "       ID: #{update_response.account.id}"
-puts "Suspended: #{update_response.account.suspended}"
+puts "\tID: #{update_response.account.id}"
+puts "\tSuspended: #{update_response.account.suspended}"

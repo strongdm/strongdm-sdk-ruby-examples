@@ -40,6 +40,6 @@ service = SDM::Service.new(
 response = client.accounts.create(service, deadline: deadline)
 
 puts 'Successfully created service.'
-puts "     ID: #{response.account.id}"
-puts "   Name: #{response.account.name}"
-puts "  Token: #{response.token}"
+puts "\tID: #{response.account.id}"
+puts "\tName: #{response.account.name}"
+puts "\tToken: #{response.token}"

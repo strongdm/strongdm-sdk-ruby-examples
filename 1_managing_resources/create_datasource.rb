@@ -46,5 +46,5 @@ postgres = SDM::Postgres.new(
 response = client.resources.create(postgres, deadline: deadline)
 
 puts 'Successfully created Postgres datasource.'
-puts "    ID: #{response.resource.id}"
-puts "  Name: #{response.resource.name}"
+puts "\tID: #{response.resource.id}"
+puts "\tName: #{response.resource.name}"

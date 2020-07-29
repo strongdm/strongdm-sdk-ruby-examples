@@ -45,8 +45,8 @@ postgres = SDM::Postgres.new(
 # Create the datasource
 postgres_response = client.resources.create(postgres, deadline: deadline)
 puts 'Successfully created Postgres datasource.'
-puts "    ID: #{postgres_response.resource.id}"
-puts "  Name: #{postgres_response.resource.name}"
+puts "\tID: #{postgres_response.resource.id}"
+puts "\tName: #{postgres_response.resource.name}"
 
 # Define a role
 role = SDM::Role.new(
@@ -56,8 +56,8 @@ role = SDM::Role.new(
 # Create the role
 role_response = client.roles.create(role, deadline: deadline)
 puts 'Successfully created role.'
-puts "    ID: #{role_response.role.id}"
-puts "  Name: #{role_response.role.name}"
+puts "\tID: #{role_response.role.id}"
+puts "\tName: #{role_response.role.name}"
 
 # Define a role grant
 role_grant = SDM::RoleGrant.new(
@@ -68,7 +68,7 @@ role_grant = SDM::RoleGrant.new(
 # Create the role grant
 grant_response = client.role_grants.create(role_grant, deadline: deadline)
 puts 'Successfully created role grant.'
-puts "  ID: #{grant_response.role_grant.id}"
+puts "\tID: #{grant_response.role_grant.id}"
 
 # Define a user
 user = SDM::User.new(
@@ -80,8 +80,8 @@ user = SDM::User.new(
 # Create a user
 user_response = client.accounts.create(user, deadline: deadline)
 puts 'Successfully created user.'
-puts "     ID: #{user_response.account.id}"
-puts "  Email: #{user_response.account.email}"
+puts "\tID: #{user_response.account.id}"
+puts "\tEmail: #{user_response.account.email}"
 
 # Define an Account attachment
 account_attachment = SDM::AccountAttachment.new(
@@ -92,7 +92,7 @@ account_attachment = SDM::AccountAttachment.new(
 # Create the attachment
 attachment_response = client.account_attachments.create(account_attachment, deadline: deadline)
 puts 'Successfully created account attachment.'
-puts "  ID: #{attachment_response.account_attachment.id}"
+puts "\tID: #{attachment_response.account_attachment.id}"
 
 # Detach the user from the role
 client.account_attachments.delete(attachment_response.account_attachment.id, deadline: deadline)

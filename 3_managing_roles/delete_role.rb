@@ -39,8 +39,8 @@ role = SDM::Role.new(
 # Create the role
 create_response = client.roles.create(role, deadline: deadline)
 puts 'Successfully created role.'
-puts "    ID: #{create_response.role.id}"
-puts "  Name: #{create_response.role.name}"
+puts "\tID: #{create_response.role.id}"
+puts "\tName: #{create_response.role.name}"
 
 # Delete the role
 client.roles.delete(create_response.role.id, deadline: deadline)

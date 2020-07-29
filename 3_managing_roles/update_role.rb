@@ -39,8 +39,8 @@ role = SDM::Role.new(
 # Create the role
 create_response = client.roles.create(role, deadline: deadline)
 puts 'Successfully created role.'
-puts "    ID: #{create_response.role.id}"
-puts "  Name: #{create_response.role.name}"
+puts "\tID: #{create_response.role.id}"
+puts "\tName: #{create_response.role.name}"
 
 # Get the role
 get_response = client.roles.get(create_response.role.id, deadline: deadline)
@@ -52,5 +52,5 @@ role.name = "example role updated"
 # Update the role
 update_response = client.roles.update(role, deadline: deadline)
 puts 'Successfully updated role.'
-puts "    ID: #{update_response.role.id}"
-puts "  Name: #{update_response.role.name}"
+puts "\tID: #{update_response.role.id}"
+puts "\tName: #{update_response.role.name}"
