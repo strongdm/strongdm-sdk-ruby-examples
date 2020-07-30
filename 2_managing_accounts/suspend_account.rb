@@ -53,6 +53,6 @@ account.suspended = true
 
 # Update the account
 update_response = client.accounts.update(account, deadline: deadline)
-puts 'Successfully updated account.'
+puts 'Successfully suspended account.'
 puts "\tID: #{update_response.account.id}"
 puts "\tSuspended: #{update_response.account.suspended}"
