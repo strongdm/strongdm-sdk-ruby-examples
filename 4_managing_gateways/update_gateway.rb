@@ -49,7 +49,7 @@ get_response = client.nodes.get(create_response.node.id, deadline: deadline)
 gateway = get_response.node
 
 # Set fields
-gateway.name = "example-gateway-updated"
+gateway.name = 'example-gateway-updated'
 
 # Update the gateway
 update_response = client.nodes.update(gateway, deadline: deadline)

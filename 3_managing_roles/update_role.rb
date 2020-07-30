@@ -47,7 +47,7 @@ get_response = client.roles.get(create_response.role.id, deadline: deadline)
 role = get_response.role
 
 # Set fields
-role.name = "example role updated"
+role.name = 'example role updated'
 
 # Update the role
 update_response = client.roles.update(role, deadline: deadline)
