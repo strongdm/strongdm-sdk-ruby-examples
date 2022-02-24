@@ -35,8 +35,9 @@ deadline = Time.now.utc + 30
 ssh_server = SDM::SSH.new(
   name: 'Example SSH Server',
   hostname: 'example.strongdm.com',
-  username: 'example',\
-  port: 22
+  username: 'example',
+  port: 22,
+  tags: '{"env": "example"}'
 )
 
 # Create the server

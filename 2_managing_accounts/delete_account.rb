@@ -31,19 +31,19 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now + 30
 
-# Define a user
+# Define a User
 user = SDM::User.new(
   email: 'example@example.com',
   first_name: 'example',
   last_name: 'example'
 )
 
-# Create a user
+# Create a User
 response = client.accounts.create(user, deadline: deadline)
 puts 'Successfully created user.'
 puts "\tID: #{response.account.id}"
 puts "\tEmail: #{response.account.email}"
 
-# Delete the account
+# Delete the User
 client.accounts.delete(response.account.id, deadline: deadline)
 puts 'Successfully deleted account.'

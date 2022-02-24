@@ -31,12 +31,12 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now + 30
 
-# Define the service account
+# Define the Service Account
 service = SDM::Service.new(
   name: 'example service account'
 )
 
-# Create the service account
+# Create the Service Account
 response = client.accounts.create(service, deadline: deadline)
 
 puts 'Successfully created service.'

@@ -12,92 +12,99 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 require 'strongdm'
 
+# Create the SDM client.
 # Load the SDM API keys from the environment.
 # If these values are not set in your environment,
 # please follow the documentation here:
 # https://www.strongdm.com/docs/admin-guide/api-credentials/
-api_access_key = ENV['SDM_API_ACCESS_KEY']
-api_secret_key = ENV['SDM_API_SECRET_KEY']
-if api_access_key.nil? || api_secret_key.nil?
-  puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
-  return
+$client = SDM::Client.new(ENV["SDM_API_ACCESS_KEY"], ENV["SDM_API_SECRET_KEY"], host: "localhost:8889", insecure: true)
+
+def create_example_resources
+  # Create a resource (e.g., Redis)
+  redis = SDM::Redis.new()
+  redis.name = "example_resource_#{rand(100_000)}"
+  redis.hostname = "example.com"
+  redis.port_override = rand(3_000...20_000)
+  redis.tags = {"env": "staging"}
+  $client.resources.create(redis).resource
 end
 
-# Create the SDM client
-client = SDM::Client.new(api_access_key, api_secret_key)
+def create_example_role( access_rules)
+  # Create a Role
+  $client.roles.create(SDM::Role.new(
+    name: "exampleRole-#{rand(10_000)}",
+    access_rules: access_rules,
+  )).role
+end
 
-# Create a 30 second deadline
-deadline = Time.now.utc + 30
+def	create_role_grant_via_access_rules
+  resource1 = create_example_resources()
+  resource2 = create_example_resources()
+  role = create_example_role([{"ids": [resource1.id]}])
 
-# Define a Postgres datasource
-postgres = SDM::Postgres.new(
-  name: 'Example Postgres Datasource',
-  hostname: 'example.strongdm.com',
-  port: 5432,
-  username: 'example',
-  password: 'example',
-  database: 'example',
-  port_override: 19_999
-)
+  # Add Resource2's ID to the Role's Access Rules
+  role.access_rules[0]["ids"] << resource2.id
+  $client.roles.update(role).role
+end
 
-# Create the datasource
-postgres_response = client.resources.create(postgres, deadline: deadline)
-puts 'Successfully created Postgres datasource.'
-puts "\tID: #{postgres_response.resource.id}"
-puts "\tName: #{postgres_response.resource.name}"
+def  delete_role_grant_via_access_rules
+  resource1 = create_example_resources()
+  resource2 = create_example_resources()
+  role = create_example_role([{"ids": [resource1.id, resource2.id]}])
 
-# Define a role
-role = SDM::Role.new(
-  name: 'example role'
-)
+  # Remove the ID of the second resource
+  role.access_rules.first.reject! {|id| id == resource2.id }
+  $client.roles.update(role)
+end
 
-# Create the role
-role_response = client.roles.create(role, deadline: deadline)
-puts 'Successfully created role.'
-puts "\tID: #{role_response.role.id}"
-puts "\tName: #{role_response.role.name}"
+def  list_role_grants_via_access_rules
+  resource = create_example_resources
+  role = create_example_role([{"ids": [resource.id]}]) 
 
-# Define a role grant
-role_grant = SDM::RoleGrant.new(
-  resource_id: postgres_response.resource.id,
-  role_id: role_response.role.id
-)
+  # role.access_rules contains each Access Rule associate with the Role
+  puts role.access_rules.first["ids"]
+end
 
-# Create the role grant
-grant_response = client.role_grants.create(role_grant, deadline: deadline)
-puts 'Successfully created role grant.'
-puts "\tID: #{grant_response.role_grant.id}"
+def create_and_update_access_rules
+  redis = create_example_resources
 
-# Define a user
-user = SDM::User.new(
-  email: 'example@example.com',
-  first_name: 'example',
-  last_name: 'example'
-)
+  # Create a Role with initial Access Rule
+  access_rules = [
+    {
+      "ids": [redis.id],
+    },
+  ]
+  role = create_example_role(access_rules)
 
-# Create a user
-user_response = client.accounts.create(user, deadline: deadline)
-puts 'Successfully created user.'
-puts "\tID: #{user_response.account.id}"
-puts "\tEmail: #{user_response.account.email}"
+  # Update Access Rules
+  role.access_rules = [
+    {
+      "tags": {"env": "staging"}
+    },
+    {
+      "type": "redis"
+    }
+  ]
 
-# Define an Account attachment
-account_attachment = SDM::AccountAttachment.new(
-  account_id: user_response.account.id,
-  role_id: role_response.role.id
-)
+  $client.roles.update(role).role
+end
 
-# Create the attachment
-attachment_response = client.account_attachments.create(account_attachment, deadline: deadline)
-puts 'Successfully created account attachment.'
-puts "\tID: #{attachment_response.account_attachment.id}"
+def main
+  # Each of the following functions is an example of how to do an operation using Access Rules.
 
-# Detach the user from the role
-client.account_attachments.delete(attachment_response.account_attachment.id, deadline: deadline)
-puts 'Successfully deleted account attachment.'
+  create_and_update_access_rules
 
-# Delete the role grant
-client.role_grants.delete(grant_response.role_grant.id, deadline: deadline)
-puts 'Successfully deleted role grant.'
+ 	# The RoleGrants API has been deprecated in favor of Access Rules.
+  # When using Access Rules, the best practice is to grant Resources access based on Type and Tags.
+	# If it is _necessary_ to grant access to specific Resources in the same way as RoleGrants did,
+	# you can use Resource IDs directly in Access Rules as shown in the following examples.
+
+	create_role_grant_via_access_rules
+  delete_role_grant_via_access_rules
+  list_role_grants_via_access_rules
+end
+
+main
