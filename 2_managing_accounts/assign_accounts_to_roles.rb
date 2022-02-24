@@ -31,26 +31,26 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
-# Define a role
+# Define a Role
 role = SDM::Role.new(
   name: 'example role'
 )
 
-# Create the role
+# Create the Role
 role_response = client.roles.create(role, deadline: deadline)
 
 puts 'Successfully created role.'
 puts "\tID: #{role_response.role.id}"
 puts "\tName: #{role_response.role.name}"
 
-# Define a user
+# Define a User
 user = SDM::User.new(
   email: 'example@strongdm.com',
   first_name: 'example',
   last_name: 'example'
 )
 
-# Create the user
+# Create the User
 user_response = client.accounts.create(user, deadline: deadline)
 
 puts 'Successfully created user.'

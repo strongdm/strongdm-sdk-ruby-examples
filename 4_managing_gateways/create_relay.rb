@@ -29,12 +29,12 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
-# Define a relay
+# Define a Relay
 relay = SDM::Relay.new(
   name: 'example-relay'
 )
 
-# Create the relay
+# Create the Relay
 node_response = client.nodes.create(relay, deadline: deadline)
 
 puts 'Successfully created gateway.'

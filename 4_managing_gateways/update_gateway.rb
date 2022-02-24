@@ -31,27 +31,27 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
-# Define a gateway
+# Define a Gateway
 gateway = SDM::Gateway.new(
   name: 'example-gateway',
   listen_address: 'gateway.example.com:5555'
 )
 
-# Create the gateway
+# Create the Gateway
 create_response = client.nodes.create(gateway, deadline: deadline)
 puts 'Successfully created gateway.'
 puts "\tID: #{create_response.node.id}"
 puts "\tName: #{create_response.node.name}"
 puts "\tToken: #{create_response.token}"
 
-# Get the gateway
+# Get the Gateway
 get_response = client.nodes.get(create_response.node.id, deadline: deadline)
 gateway = get_response.node
 
 # Set fields
 gateway.name = 'example-gateway-updated'
 
-# Update the gateway
+# Update the Gateway
 update_response = client.nodes.update(gateway, deadline: deadline)
 puts 'Successfully updated gateway.'
 puts "\tID: #{update_response.node.id}"

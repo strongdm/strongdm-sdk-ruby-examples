@@ -60,7 +60,8 @@ eks_cluster = SDM::AmazonEKS.new(
   region: 'us-east-1',
   cluster_name: 'example',
   role_arn: 'arn:aws:iam::000000000000:role/RoleName',
-  healthcheck_namespace: 'default'
+  healthcheck_namespace: 'default',
+  tags: '{"env": "example"}'
 )
 
 # Create the cluster

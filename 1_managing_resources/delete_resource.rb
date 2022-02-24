@@ -31,7 +31,7 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
-# Define a Postgres datasource
+# Define a Postgres Datasource
 postgres = SDM::Postgres.new(
   name: 'Example Postgres Datasource',
   hostname: 'example.strongdm.com',
@@ -39,17 +39,18 @@ postgres = SDM::Postgres.new(
   username: 'example',
   password: 'example',
   database: 'example',
-  port_override: 19_999
+  port_override: 19_999.
+  tags: '{"env": "example"}'
 )
 
-# Create the datasource
+# Create the Datasource
 create_response = client.resources.create(postgres, deadline: deadline)
 
 puts 'Successfully created Postgres datasource.'
 puts "\tID: #{create_response.resource.id}"
 puts "\tName: #{create_response.resource.name}"
 
-# Delete the datasource
+# Delete the Datasource
 client.resources.delete(create_response.resource.id, deadline: deadline)
 
 puts 'Successfully deleted Postgres datasource.'

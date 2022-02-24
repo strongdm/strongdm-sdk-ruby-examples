@@ -39,10 +39,11 @@ postgres = SDM::Postgres.new(
   username: 'example',
   password: 'example',
   database: 'example',
-  port_override: 19_999
+  port_override: 19_999,
+  tags: '{"env": "example"}'
 )
 
-# Create the datasource
+# Create the Datasource
 response = client.resources.create(postgres, deadline: deadline)
 
 puts 'Successfully created Postgres datasource.'
