@@ -98,7 +98,7 @@ def main
   create_and_update_access_rules
 
  	# The RoleGrants API has been deprecated in favor of Access Rules.
-  # When using Access Rules, the best practice is to grant Resources access based on Type and Tags.
+ 	# When using Access Rules, the best practice is to grant Resources access based on type and tags.
 	# If it is _necessary_ to grant access to specific Resources in the same way as RoleGrants did,
 	# you can use Resource IDs directly in Access Rules as shown in the following examples.
 
