@@ -33,14 +33,14 @@ deadline = Time.now.utc + 30
 
 # Define a Postgres Datasource
 postgres = SDM::Postgres.new(
-  name: 'Example Postgres Datasource',
+  name: 'Ruby Example Postgres Datasource For Update',
   hostname: 'example.strongdm.com',
   port: 5432,
   username: 'example',
   password: 'example',
   database: 'example',
-  port_override: 19_999,
-  tags: '{"env": "example"}'
+  port_override: 19_403,
+  tags: {"env": "example"}
 )
 
 # Create the Datasource
@@ -55,7 +55,7 @@ get_response = client.resources.get(create_response.resource.id, deadline: deadl
 resource = get_response.resource
 
 # Update the fields to change
-resource.name = 'Example Name Updated'
+resource.name = 'Ruby Example Postgres Updated'
 
 # Update the Datasource
 update_response = client.resources.update(resource, deadline: deadline)

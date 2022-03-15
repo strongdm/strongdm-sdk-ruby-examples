@@ -20,7 +20,13 @@ require 'strongdm'
 # If these values are not set in your environment,
 # please follow the documentation here:
 # https://www.strongdm.com/docs/admin-guide/api-credentials/
-$client = SDM::Client.new(ENV["SDM_API_ACCESS_KEY"], ENV["SDM_API_SECRET_KEY"], host: "localhost:8889", insecure: true)
+api_access_key = ENV['SDM_API_ACCESS_KEY']
+api_secret_key = ENV['SDM_API_SECRET_KEY']
+if api_access_key.nil? || api_secret_key.nil?
+  puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
+  return
+end
+$client = SDM::Client.new(api_access_key, api_secret_key)
 
 def create_example_resources
   # Create a resource (e.g., Redis)
@@ -46,21 +52,27 @@ def	create_role_grant_via_access_rules
   role = create_example_role([{"ids": [resource1.id]}])
 
   # Add Resource2's ID to the Role's Access Rules
+  if role.access_rules.length() == 0
+    role.access_rules = [{"ids": []}]
+  end
   role.access_rules[0]["ids"] << resource2.id
   $client.roles.update(role).role
 end
 
-def  delete_role_grant_via_access_rules
+def delete_role_grant_via_access_rules
   resource1 = create_example_resources()
   resource2 = create_example_resources()
   role = create_example_role([{"ids": [resource1.id, resource2.id]}])
 
   # Remove the ID of the second resource
-  role.access_rules.first.reject! {|id| id == resource2.id }
+  role.access_rules[0]["ids"].reject! {|id| id == resource2.id }
+  if role.access_rules[0]["ids"].length() == 0
+    role.access_rules = []
+  end
   $client.roles.update(role)
 end
 
-def  list_role_grants_via_access_rules
+def list_role_grants_via_access_rules
   resource = create_example_resources
   role = create_example_role([{"ids": [resource.id]}]) 
 
@@ -68,41 +80,14 @@ def  list_role_grants_via_access_rules
   puts role.access_rules.first["ids"]
 end
 
-def create_and_update_access_rules
-  redis = create_example_resources
-
-  # Create a Role with initial Access Rule
-  access_rules = [
-    {
-      "ids": [redis.id],
-    },
-  ]
-  role = create_example_role(access_rules)
-
-  # Update Access Rules
-  role.access_rules = [
-    {
-      "tags": {"env": "staging"}
-    },
-    {
-      "type": "redis"
-    }
-  ]
-
-  $client.roles.update(role).role
-end
-
 def main
-  # Each of the following functions is an example of how to do an operation using Access Rules.
 
-  create_and_update_access_rules
-
- 	# The Role Grants API has been deprecated in favor of Access Rules.
+ 	# The RoleGrants API has been deprecated in favor of Access Rules.
  	# When using Access Rules, the best practice is to grant Resources access based on type and tags.
 	# If it is _necessary_ to grant access to specific Resources in the same way as Role Grants did,
 	# you can use Resource IDs directly in Access Rules as shown in the following examples.
 
-create_role_grant_via_access_rules
+  create_role_grant_via_access_rules
   delete_role_grant_via_access_rules
   list_role_grants_via_access_rules
 end

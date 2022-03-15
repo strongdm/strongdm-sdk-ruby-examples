@@ -12,53 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 require 'strongdm'
 
-# Create the SDM client.
 # Load the SDM API keys from the environment.
 # If these values are not set in your environment,
 # please follow the documentation here:
 # https://www.strongdm.com/docs/admin-guide/api-credentials/
-$client = SDM::Client.new(ENV["SDM_API_ACCESS_KEY"], ENV["SDM_API_SECRET_KEY"], host: "localhost:8889", insecure: true)
-
-def create_example_resources
-  # Create a resource (e.g., Redis)
-  redis = SDM::Redis.new()
-  redis.name = "example_resource_#{rand(100_000)}"
-  redis.hostname = "example.com"
-  redis.port_override = rand(3_000...20_000)
-  redis.tags = {"env": "staging"}
-  $client.resources.create(redis).resource
+api_access_key = ENV['SDM_API_ACCESS_KEY']
+api_secret_key = ENV['SDM_API_SECRET_KEY']
+if api_access_key.nil? || api_secret_key.nil?
+  puts 'SDM_API_ACCESS_KEY and SDM_API_SECRET_KEY must be provided'
+  return
 end
 
-def create_example_role( access_rules)
-  $client.roles.create(SDM::Role.new(
-    name: "exampleRole-#{rand(10_000)}",
-    access_rules: access_rules,
-  )).role
-end
+# Create the SDM client
+client = SDM::Client.new(api_access_key, api_secret_key)
 
-def create_and_update_access_rules
-  redis = create_example_resources
+# Create a 30 second deadline
+deadline = Time.now.utc + 30
 
-  # Create a Role with initial Access Rule
-  access_rules = [
-    {
-      "ids": [redis.id],
-    },
-  ]
-  role = create_example_role(access_rules)
+# Define a role
+role = SDM::Role.new(
+  name: 'Ruby Create Role Example'
+)
 
-  # Update Access Rules
-  role.access_rules = [
-    {
-      "tags": {"env": "staging"}
-    },
-    {
-      "type": "redis"
-    }
-  ]
+# Create the role
+role_response = client.roles.create(role, deadline: deadline)
 
-  $client.roles.update(role).role
-end
+puts 'Successfully created role.'
+puts "\tID: #{role_response.role.id}"
+puts "\tName: #{role_response.role.name}"

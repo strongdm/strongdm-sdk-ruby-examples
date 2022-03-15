@@ -11,7 +11,7 @@ GEM
     ipaddr (1.2.2)
     openssl (2.1.2)
       ipaddr
-    strongdm (1.0.7)
+    strongdm (2.0.0)
       grpc (~> 1.27.0, >= 1.27.0)
       grpc-tools (~> 1.27.0, >= 1.27.0)
       openssl (~> 2.1.2, >= 2.1.2)
