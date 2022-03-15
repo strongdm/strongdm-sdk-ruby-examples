@@ -33,13 +33,13 @@ deadline = Time.now.utc + 30
 
 # Define a RDP server
 rdp_server = SDM::RDP.new(
-  name: 'Example RDP Server',
+  name: 'Ruby Example RDP Server',
   hostname: 'example.strongdm.com',
   username: 'example',
   password: 'example',
   port: 3389,
-  port_override: 19_999,
-  tags: '{"env": "example"}'
+  port_override: 19_401,
+  tags: {"env": "example"}
 )
 
 # Create the server

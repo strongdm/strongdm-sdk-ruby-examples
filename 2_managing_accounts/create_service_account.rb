@@ -33,7 +33,7 @@ deadline = Time.now + 30
 
 # Define the Service Account
 service = SDM::Service.new(
-  name: 'example service account'
+  name: 'Ruby Example Service Account'
 )
 
 # Create the Service Account

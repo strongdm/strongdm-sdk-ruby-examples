@@ -33,7 +33,7 @@ deadline = Time.now + 30
 
 # Define a User
 user = SDM::User.new(
-  email: 'example@example.com',
+  email: 'ruby-delete-user@example.com',
   first_name: 'example',
   last_name: 'example'
 )

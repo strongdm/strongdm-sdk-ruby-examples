@@ -33,7 +33,7 @@ deadline = Time.now.utc + 30
 
 # Define a Role
 role = SDM::Role.new(
-  name: 'example role'
+  name: 'Ruby Assign Example'
 )
 
 # Create the Role
@@ -45,7 +45,7 @@ puts "\tName: #{role_response.role.name}"
 
 # Define a User
 user = SDM::User.new(
-  email: 'example@strongdm.com',
+  email: 'ruby-assign@example.com',
   first_name: 'example',
   last_name: 'example'
 )

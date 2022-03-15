@@ -33,14 +33,14 @@ deadline = Time.now.utc + 30
 
 # Define a Postgres Datasource
 postgres = SDM::Postgres.new(
-  name: 'Example Postgres Datasource',
+  name: 'Ruby Example Postgres Datasource for Delete',
   hostname: 'example.strongdm.com',
   port: 5432,
   username: 'example',
   password: 'example',
   database: 'example',
-  port_override: 19_999,
-  tags: '{"env": "example"}'
+  port_override: 19_402,
+  tags: {"env": "example"}
 )
 
 # Create the Datasource

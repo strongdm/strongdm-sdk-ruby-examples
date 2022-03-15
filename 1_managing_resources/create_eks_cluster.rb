@@ -52,7 +52,7 @@ JrXnKV7Z4r9uWg==
 "
 
 eks_cluster = SDM::AmazonEKS.new(
-  name: 'Example EKS Cluster',
+  name: 'Ruby Example EKS Cluster',
   endpoint: 'https://A1ADBDD0AE833267869C6ED0476D6B41.gr7.us-east-2.eks.amazonaws.com',
   access_key: 'AKIAIOSFODNN7EXAMPLE',
   secret_access_key: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
@@ -61,7 +61,7 @@ eks_cluster = SDM::AmazonEKS.new(
   cluster_name: 'example',
   role_arn: 'arn:aws:iam::000000000000:role/RoleName',
   healthcheck_namespace: 'default',
-  tags: '{"env": "example"}'
+  tags: {"env": "example"}
 )
 
 # Create the cluster
