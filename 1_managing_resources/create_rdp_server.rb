@@ -32,6 +32,7 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 deadline = Time.now.utc + 30
 
 # Define a RDP server
+# Set `port_override` to `-1` to auto-generate a port if Port Overrides is enabled.
 rdp_server = SDM::RDP.new(
   name: 'Ruby Example RDP Server',
   hostname: 'example.strongdm.com',
