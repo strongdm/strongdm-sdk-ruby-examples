@@ -32,6 +32,7 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 deadline = Time.now.utc + 30
 
 # Define a Postgres datasource
+# Set `port_override` to `-1` to auto-generate a port if Port Overrides is enabled.
 postgres = SDM::Postgres.new(
   name: 'Ruby Example Postgres Datasource',
   hostname: 'example.strongdm.com',
