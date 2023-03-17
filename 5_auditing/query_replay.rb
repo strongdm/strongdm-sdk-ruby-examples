@@ -18,7 +18,7 @@ require 'strongdm'
 # Load the SDM API keys from the environment.
 # If these values are not set in your environment,
 # please follow the documentation here:
-# https://www.strongdm.com/docs/admin-guide/api-credentials/
+# https://www.strongdm.com/docs/api/api-keys/
 api_access_key = ENV['SDM_API_ACCESS_KEY']
 api_secret_key = ENV['SDM_API_SECRET_KEY']
 if api_access_key.nil? || api_secret_key.nil?
