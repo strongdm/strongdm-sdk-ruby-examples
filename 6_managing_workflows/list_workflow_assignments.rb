@@ -31,22 +31,7 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
-# Define an auto grant Workflow with initial Access Rules. Note that this
-# workflow will be enabled.
-workflow = SDM::Workflow.new(
-  name: 'Ruby List WorkflowAssignment Example',
-  description: 'Ruby Workflow Description',
-)
-
-# Create the Workflow
-workflow_response = client.workflows.create(workflow, deadline: deadline)
-workflow = workflow_response.workflow
-
-puts 'Successfully created Workflow.'
-puts "\tID: #{workflow.id}"
-
 # Create a resource - used for workflow assignments
-# Set `port_override` to `-1` to auto-generate a port if Port Overrides is enabled.
 postgres = SDM::Postgres.new(
     name: 'Ruby Example Postgres Datasource',
     hostname: 'example.strongdm.com',
@@ -61,10 +46,17 @@ postgres = SDM::Postgres.new(
 resource_response = client.resources.create(postgres, deadline: deadline)
 resource_id = resource_response.resource.id
 
-# Update workflow assignments
-workflow.access_rules = [{"ids": [resource_id]}]
-update_response = client.workflows.update(workflow, deadline: deadline)
-puts 'Successfully updated Workflow Assignment.'
+# Create a Workflow and assign the resources via a static access rule
+workflow = SDM::Workflow.new(
+  name: 'Ruby List WorkflowAssignment Example',
+  description: 'Ruby Workflow Description',
+  access_rules = [{"ids": [resource_id]}]
+)
+workflow_response = client.workflows.create(workflow, deadline: deadline)
+workflow = workflow_response.workflow
+
+puts 'Successfully created Workflow.'
+puts "\tID: #{workflow.id}"
 
 # List workflow assignments
 workflow_assignments = client.workflow_assignmentsy.list('resource:?', resource_id)
