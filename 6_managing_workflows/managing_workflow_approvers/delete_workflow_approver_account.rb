@@ -33,7 +33,7 @@ deadline = Time.now.utc + 30
 
 # Define a Workflow
 workflow = SDM::Workflow.new(
-  name: 'Ruby Create WorkflowApprover Example',
+  name: 'Ruby Delete WorkflowApprover Example',
   description: 'Ruby Workflow Description',
   access_rules: [
     {
@@ -50,9 +50,9 @@ workflow_id = workflow.id
 puts 'Successfully created Workflow.'
 puts "\tID: #{workflow_id}"
 
-# Create a approver - used for creating a workflow approver
+# Create an approver account - used for creating a workflow approver
 approver = SDM::User.new(
-    email: 'ruby-create-workflow-approver@example.com',
+    email: 'ruby-delete-workflow-approver@example.com',
     first_name: 'Example',
     last_name: 'Approver'
 )
@@ -62,7 +62,7 @@ approver_id = approver_response.account.id
 # Create the WorkflowApprover
 workflow_approver = SDM::WorkflowApprover.new(
     workflow_id: workflow_id,
-    approver_id: approver_id,
+    account_id: approver_id,
 )
 workflow_approver_response = client.workflow_approvers.create(workflow_approver, deadline: deadline)
 workflow_approver_id = workflow_approver_response.workflow_approver.id
@@ -70,3 +70,6 @@ workflow_approver_id = workflow_approver_response.workflow_approver.id
 puts 'Successfully created WorkflowApprover.'
 puts "\tID: #{workflow_approver_id}"
 
+# Delete a WorkflowApprover
+client.workflow_approvers.delete(workflow_approver_id, deadline: deadline)
+puts 'Successfully deleted WorkflowApprover.'
