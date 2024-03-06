@@ -1,4 +1,4 @@
-# Copyright 2023 StrongDM Inc
+# Copyright 2024 StrongDM Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,40 +31,29 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
-# Define a Workflow
-workflow = SDM::Workflow.new(
-  name: 'Ruby Create WorkflowApprover Example',
-  description: 'Ruby Workflow Description',
-  access_rules: [
-    {
-      "tags": {"env": "dev"},
-    }
-  ],
+# Define an approval workflow.
+# Note that in order to add approval workflow steps, the approval workflow must have approval_mode 'manual'
+approval_workflow = SDM::ApprovalWorkflow.new(
+  name: 'Ruby Create Approval Workflow Step Example',
+  description: 'Ruby Approval Workflow Description',
+  approval_mode: 'manual',
 )
 
-# Create the Workflow
-workflow_response = client.workflows.create(workflow, deadline: deadline)
-workflow = workflow_response.workflow
-workflow_id = workflow.id
+# Create the Approval Workflow
+approval_workflow_response = client.approval_workflows.create(approval_workflow, deadline: deadline)
+approval_workflow_id = approval_workflow_response.approval_workflow.id
 
-puts 'Successfully created Workflow.'
-puts "\tID: #{workflow_id}"
+puts 'Successfully created Approval Workflow.'
+puts "\tID: #{approval_workflow_id}"
 
-# Create an approver role - used for creating a workflow approver
-role = SDM::Role.new(
-    name: 'Ruby Role for Creating Workflow Approver Example'
+# Define an approval workflow step.
+approval_workflow_step = SDM::ApprovalWorkflowStep.new(
+  approval_flow_id: approval_workflow_id,
 )
-role_response = client.roles.create(role, deadline: deadline)
-role_id = role_response.role.id
 
-# Create the WorkflowApprover
-workflow_approver = SDM::WorkflowApprover.new(
-    workflow_id: workflow_id,
-    role_id: role_id,
-)
-workflow_approver_response = client.workflow_approvers.create(workflow_approver, deadline: deadline)
-workflow_approver_id = workflow_approver_response.workflow_approver.id
+# Create the Approval Workflow Step
+approval_workflow_step_response = client.approval_workflow_steps.create(approval_workflow_step, deadline: deadline)
+approval_workflow_step_id = approval_workflow_step_response.approval_workflow_step.id
 
-puts 'Successfully created WorkflowApprover.'
-puts "\tID: #{workflow_approver_id}"
-
+puts 'Successfully created Approval Workflow Step.'
+puts "\tID: #{approval_workflow_step_id}"
