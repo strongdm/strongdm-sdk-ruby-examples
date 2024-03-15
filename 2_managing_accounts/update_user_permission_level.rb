@@ -33,9 +33,10 @@ deadline = Time.now + 30
 
 # Define a User
 user = SDM::User.new(
-  email: 'ruby-suspend@example.com',
+  email: 'ruby-update-permissions@example.com',
   first_name: 'example',
-  last_name: 'example'
+  last_name: 'example',
+  permission_level: SDM::PermissionLevel::TEAM_LEADER
 )
 
 # Create a User
@@ -43,16 +44,17 @@ create_response = client.accounts.create(user, deadline: deadline)
 puts 'Successfully created user.'
 puts "\tID: #{create_response.account.id}"
 puts "\tEmail: #{create_response.account.email}"
+puts "\tPermission Level: #{create_response.account.permission_level}"
 
 # Get the account
 get_response = client.accounts.get(create_response.account.id, deadline: deadline)
 account = get_response.account
 
 # Set fields
-account.permission_level = SDM::PermissionLevel::SUSPENDED
+account.permission_level = SDM::PermissionLevel::DATABASE_ADMIN
 
 # Update the account
 update_response = client.accounts.update(account, deadline: deadline)
-puts 'Successfully suspended account.'
+puts 'Successfully updated permission level.'
 puts "\tID: #{update_response.account.id}"
-puts "\tSuspended: #{update_response.account.suspended}"
+puts "\tPermission Level: #{update_response.account.permission_level}"
