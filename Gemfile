@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.6.6'
+ruby '3.3.0'
 
 gem 'strongdm'
+gem 'openssl-oaep'

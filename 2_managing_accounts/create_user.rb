@@ -35,7 +35,8 @@ deadline = Time.now + 30
 user = SDM::User.new(
   email: 'ruby-create-user@example.com',
   first_name: 'example',
-  last_name: 'example'
+  last_name: 'example',
+  permission_level: SDM::PermissionLevel::TEAM_LEADER
 )
 
 # Create a User
