@@ -1,36 +1,30 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    google-protobuf (3.25.3)
-    google-protobuf (3.25.3-aarch64-linux)
-    google-protobuf (3.25.3-arm64-darwin)
-    google-protobuf (3.25.3-x86-linux)
-    google-protobuf (3.25.3-x86_64-darwin)
-    google-protobuf (3.25.3-x86_64-linux)
-    googleapis-common-protos-types (1.14.0)
-      google-protobuf (~> 3.18)
-    grpc (1.62.0)
-      google-protobuf (~> 3.25)
+    google-protobuf (3.25.4)
+    google-protobuf (3.25.4-aarch64-linux)
+    google-protobuf (3.25.4-arm64-darwin)
+    google-protobuf (3.25.4-x86-linux)
+    google-protobuf (3.25.4-x86_64-darwin)
+    google-protobuf (3.25.4-x86_64-linux)
+    googleapis-common-protos-types (1.16.0)
+      google-protobuf (>= 3.18, < 5.a)
+    grpc (1.46.2)
+      google-protobuf (~> 3.19)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.62.0-aarch64-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.46.2-x86-linux)
+      google-protobuf (~> 3.19)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.62.0-arm64-darwin)
-      google-protobuf (~> 3.25)
+    grpc (1.46.2-x86_64-darwin)
+      google-protobuf (~> 3.19)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.62.0-x86-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.46.2-x86_64-linux)
+      google-protobuf (~> 3.19)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.62.0-x86_64-darwin)
-      google-protobuf (~> 3.25)
-      googleapis-common-protos-types (~> 1.0)
-    grpc (1.62.0-x86_64-linux)
-      google-protobuf (~> 3.25)
-      googleapis-common-protos-types (~> 1.0)
-    grpc-tools (1.62.0)
+    grpc-tools (1.66.0)
     openssl (3.2.0)
     openssl-oaep (0.1.0)
-    strongdm (8.0.0)
+    strongdm (11.10.0)
       grpc (~> 1.36)
       grpc-tools (~> 1.36)
       openssl (~> 3.1)
@@ -44,11 +38,12 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  openssl-oaep
-  strongdm
+  grpc (= 1.46.2)
+  openssl-oaep (= 0.1.0)
+  strongdm (>= 11.10.0)
 
 RUBY VERSION
-   ruby 3.3.0p0
+   ruby 3.1.2p20
 
 BUNDLED WITH
    2.5.6
