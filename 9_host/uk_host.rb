@@ -32,13 +32,21 @@ client = SDM::Client.new(api_access_key, api_secret_key, host: host)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
-# Create an approval workflow for example
-approval_workflow = SDM::ApprovalWorkflow.new(
-  name: 'Ruby Create Approval Workflow Example',
-  description: 'Ruby Approval Workflow Description',
-  approval_mode: 'automatic',
+# Define a Postgres datasource
+postgres = SDM::Postgres.new(
+  name: 'Ruby Example Postgres Datasource',
+  hostname: 'example.strongdm.com',
+  port: 5432,
+  username: 'example',
+  password: 'example',
+  database: 'example',
+  port_override: 19_400,
+  tags: {"env": "example"}
 )
-approval_workflow_response = client.approval_workflows.create(approval_workflow, deadline: deadline)
 
-puts 'Successfully created Approval Workflow.'
-puts "\tID: #{approval_workflow_response.approval_workflow.id}"
+# Create the Datasource for example
+response = client.resources.create(postgres, deadline: deadline)
+
+puts 'Successfully created Postgres datasource.'
+puts "\tID: #{response.resource.id}"
+puts "\tName: #{response.resource.name}"
