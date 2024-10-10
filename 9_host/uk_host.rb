@@ -25,7 +25,8 @@ if api_access_key.nil? || api_secret_key.nil?
   return
 end
 
-# Create the SDM client with the UK host
+# Configure a client to communicate with the UK host.
+# If the WithHost option is not provided it will default to the US control plane (api.strongdm.com:443)
 host = SDM::APIHost::UK
 client = SDM::Client.new(api_access_key, api_secret_key, host: host)
 
