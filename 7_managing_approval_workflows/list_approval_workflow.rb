@@ -95,12 +95,12 @@ autogrant_flow = approval_workflow_response.approval_workflow
 
 puts 'Successfully created Approval Workflow.'
 puts "\tID: #{autogrant_flow.id}"
-puts "\tName: #{autogrant_flow.approval_workflow.name}"
+puts "\tName: #{autogrant_flow.name}"
 
 
 # List Approval Workflows. Filter by Approval Workflow Name.
 client.page_limit = 4
-list_response = @client.approval_workflows.list("name:?", "List*").to_a
+list_response = client.approval_workflows.list("name:?", "List*").to_a
 got_approval_flows = Array.new()
 list_response.each do |n|
     got_approval_flows.push n
@@ -110,7 +110,7 @@ puts "Got #{got_approval_flows.length} Approval Workflows with name starting in 
 
 # List Approval Workflows. Filter by id.
 client.page_limit = 4
-list_response = @client.approval_workflows.list("id:?", manual_flow.id).to_a
+list_response = client.approval_workflows.list("id:?", manual_flow.id).to_a
 got_approval_flows = Array.new()
 list_response.each do |n|
     got_approval_flows.push n

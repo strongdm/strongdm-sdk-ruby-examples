@@ -106,15 +106,13 @@ updated_flow_configuration = SDM::ApprovalWorkflow.new(
         quantifier: "any",
         skip_after: 120, # in minutes
         approvers: [
-            SDM::ApprovalFlowApprover.new(account_id: account_id),
-            SDM::ApprovalFlowApprover.new(account_id: account2_id)
+            SDM::ApprovalFlowApprover.new(account_id: account_id)
         ]
     ),
     SDM::ApprovalFlowStep.new(
         quantifier: "any",
         skip_after: 240, # in minutes
         approvers: [
-            SDM::ApprovalFlowApprover.new(account_id: account_id),
             SDM::ApprovalFlowApprover.new(account_id: account2_id)
         ]
     )

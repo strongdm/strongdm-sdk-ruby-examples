@@ -61,7 +61,7 @@ puts "\tDescription: #{update_response.approval_workflow.description}"
 # Update Approval Workflow Approval Mode
 approval_workflow.approval_mode = 'manual'
 update_response = client.approval_workflows.update(approval_workflow, deadline: deadline)
-puts 'Successfully updated Approval Workflow Description.'
+puts 'Successfully updated Approval Workflow Approval Mode.'
 puts "\tApproval Mode: #{update_response.approval_workflow.approval_mode}"
 
 # Delete the Approval Workflow
