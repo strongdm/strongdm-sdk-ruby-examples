@@ -1,4 +1,4 @@
-# Copyright 2024 StrongDM Inc
+# Copyright 2025 StrongDM Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,28 +32,38 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 deadline = Time.now.utc + 30
 
 # Define an approval workflow.
-# Note that in order to add approval workflow steps, the approval workflow must have approval_mode 'manual'
 approval_workflow = SDM::ApprovalWorkflow.new(
-  name: 'Ruby Create Approval Workflow Step Example',
+  name: 'Ruby Approval Workflow Example',
   description: 'Ruby Approval Workflow Description',
-  approval_mode: 'manual',
+  approval_mode: 'automatic',
 )
 
 # Create the Approval Workflow
 approval_workflow_response = client.approval_workflows.create(approval_workflow, deadline: deadline)
-approval_workflow_id = approval_workflow_response.approval_workflow.id
+approval_workflow = approval_workflow_response.approval_workflow
 
 puts 'Successfully created Approval Workflow.'
-puts "\tID: #{approval_workflow_id}"
+puts "\tID: #{approval_workflow.id}"
+puts "\tName: #{approval_workflow_response.approval_workflow.name}"
 
-# Define an approval workflow step.
-approval_workflow_step = SDM::ApprovalWorkflowStep.new(
-  approval_flow_id: approval_workflow_id,
-)
+# Update Approval Workflow Name
+approval_workflow.name = 'Ruby Update Approval Workflow Example New Name'
+update_response = client.approval_workflows.update(approval_workflow, deadline: deadline)
+puts 'Successfully updated Approval Workflow Name.'
+puts "\tName: #{update_response.approval_workflow.name}"
 
-# Create the Approval Workflow Step
-approval_workflow_step_response = client.approval_workflow_steps.create(approval_workflow_step, deadline: deadline)
-approval_workflow_step_id = approval_workflow_step_response.approval_workflow_step.id
+# Update Approval Workflow Description
+approval_workflow.description = 'Ruby Update Approval Workflow Example Description'
+update_response = client.approval_workflows.update(approval_workflow, deadline: deadline)
+puts 'Successfully updated Approval Workflow Description.'
+puts "\tDescription: #{update_response.approval_workflow.description}"
 
-puts 'Successfully created Approval Workflow Step.'
-puts "\tID: #{approval_workflow_step_id}"
+# Update Approval Workflow Approval Mode
+approval_workflow.approval_mode = 'manual'
+update_response = client.approval_workflows.update(approval_workflow, deadline: deadline)
+puts 'Successfully updated Approval Workflow Approval Mode.'
+puts "\tApproval Mode: #{update_response.approval_workflow.approval_mode}"
+
+# Delete the Approval Workflow
+client.approval_workflows.delete(approval_workflow.id, deadline: deadline)
+puts 'Successfully deleted Approval Workflow.'
