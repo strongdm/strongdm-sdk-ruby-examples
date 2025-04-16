@@ -41,7 +41,7 @@ account = SDM::User.new(
 account_response = client.accounts.create(account, deadline: deadline)
 account_id = account_response.account.id
 account2 = SDM::User.new(
-    email: 'ruby-create-approval-workflow-approver@example.com',
+    email: 'ruby-create-approval-workflow-approver2@example.com',
     first_name: 'Example',
     last_name: 'Approver'
 )
