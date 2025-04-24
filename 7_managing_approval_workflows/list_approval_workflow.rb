@@ -65,7 +65,9 @@ approval_workflow = SDM::ApprovalWorkflow.new(
     SDM::ApprovalFlowStep.new(
         quantifier: "all",
         approvers: [
-            SDM::ApprovalFlowApprover.new(account_id: account_id)
+            SDM::ApprovalFlowApprover.new(account_id: account_id),
+            SDM::ApprovalFlowApprover.new(reference: SDM::ApproverReference.MANAGER_OF_REQUESTER),
+            SDM::ApprovalFlowApprover.new(reference: SDM::ApproverReference.MANAGER_OF_MANAGER_OF_REQUESTER)
         ]
     )
   ]
