@@ -74,7 +74,7 @@ approval_workflow = SDM::ApprovalWorkflow.new(
         approvers: [
             SDM::ApprovalFlowApprover.new(account_id: account_id),
             SDM::ApprovalFlowApprover.new(account_id: account2_id),
-            SDM::ApprovalFlowApprover.new(reference: SDM::ApproverReference.MANAGER_OF_REQUESTER)
+            SDM::ApprovalFlowApprover.new(reference: SDM::ApproverReference::MANAGER_OF_REQUESTER)
         ]
     )
   ]
@@ -115,7 +115,7 @@ updated_flow_configuration = SDM::ApprovalWorkflow.new(
         skip_after: 240, # in minutes
         approvers: [
             SDM::ApprovalFlowApprover.new(account_id: account2_id),
-            SDM::ApprovalFlowApprover.new(reference: SDM::ApproverReference.MANAGER_OF_MANAGER_OF_REQUESTER)
+            SDM::ApprovalFlowApprover.new(reference: SDM::ApproverReference::MANAGER_OF_MANAGER_OF_REQUESTER)
         ]
     )
   ]
