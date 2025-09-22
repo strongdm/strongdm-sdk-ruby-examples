@@ -56,6 +56,14 @@ role = SDM::Role.new(
 role_response = client.roles.create(role, deadline: deadline)
 role_id = role_response.role.id
 
+# Create an approver group - this group is designated as an approver in the approval workflow created below,
+# allowing any user in this group to grant approval
+group = SDM::Group.new(
+    name: 'Ruby Group for Creating Approval Workflow Approver Example'
+)
+group_response = client.groups.create(group, deadline: deadline)
+group_id = group_response.group.id
+
 # Define an approval workflow.
 approval_workflow = SDM::ApprovalWorkflow.new(
   name: "Example Manual Approval Workflow",
@@ -66,7 +74,8 @@ approval_workflow = SDM::ApprovalWorkflow.new(
         quantifier: "any",
         skip_after: 60, # in minutes
         approvers: [
-            SDM::ApprovalFlowApprover.new(role_id: role_id)
+            SDM::ApprovalFlowApprover.new(role_id: role_id),
+            SDM::ApprovalFlowApprover.new(group_id: group_id)  # Group approver added
         ]
     ),
     SDM::ApprovalFlowStep.new(
@@ -74,6 +83,7 @@ approval_workflow = SDM::ApprovalWorkflow.new(
         approvers: [
             SDM::ApprovalFlowApprover.new(account_id: account_id),
             SDM::ApprovalFlowApprover.new(account_id: account2_id),
+            SDM::ApprovalFlowApprover.new(group_id: group_id),  # Group approver added
             SDM::ApprovalFlowApprover.new(reference: SDM::ApproverReference::MANAGER_OF_REQUESTER)
         ]
     )
