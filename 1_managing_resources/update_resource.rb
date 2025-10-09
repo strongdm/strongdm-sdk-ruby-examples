@@ -57,9 +57,27 @@ resource = get_response.resource
 # Update the fields to change
 resource.name = 'Ruby Example Postgres Updated'
 
+# If your organization has Virtual Networking Mode enabled,
+# you can automatically allocate an IP to that resource via the 
+# SDM::ResourceIPAllocationMode::VNM constant...
+resource.bind_interface = SDM::ResourceIPAllocationMode::VNM
+
+# ...Or fallback to whatever the default behavior is for your organization...
+resource.bind_interface = SDM::ResourceIPAllocationMode::DEFAULT
+
+# ...Or if there is a specific IP to bind to, you can specify it directly.
+# For more details on Virtual Networking Mode see documentation here:
+# https://docs.strongdm.com/admin/clients/client-networking/virtual-networking-mode
+resource.bind_interface = "127.0.0.1"
+
+# Update `PortOverride` to `-1` to auto-allocate a different available port.
+resource.port_override = -1
+
 # Update the Datasource
 update_response = client.resources.update(resource, deadline: deadline)
 
 puts 'Successfully updated Postgres datasource.'
 puts "\tID: #{update_response.resource.id}"
 puts "\tName: #{update_response.resource.name}"
+puts "\tBindInterface: #{update_response.resource.bind_interface}"
+puts "\tPortOverride: #{update_response.resource.port_override}"
