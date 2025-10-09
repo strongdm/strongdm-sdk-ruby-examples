@@ -28,9 +28,9 @@ GEM
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     grpc-tools (1.66.0)
-    openssl (3.3.0)
+    openssl (3.3.1)
     openssl-oaep (0.1.0)
-    strongdm (14.13.0)
+    strongdm (15.21.0)
       grpc (~> 1.36)
       grpc-tools (~> 1.36)
       openssl (~> 3.1)
@@ -48,7 +48,7 @@ DEPENDENCIES
   grpc (~> 1.36)
   grpc-tools (~> 1.36)
   openssl-oaep (= 0.1.0)
-  strongdm (>= 14.13.0)
+  strongdm (>= 15.20.0)
 
 RUBY VERSION
    ruby 3.1.2p20
