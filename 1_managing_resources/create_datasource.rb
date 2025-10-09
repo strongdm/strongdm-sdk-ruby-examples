@@ -32,7 +32,6 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 deadline = Time.now.utc + 30
 
 # Define a Postgres datasource
-# Set `port_override` to `-1` to auto-generate a port if Port Overrides is enabled.
 postgres = SDM::Postgres.new(
   name: 'Ruby Example Postgres Datasource',
   hostname: 'example.strongdm.com',
@@ -40,9 +39,33 @@ postgres = SDM::Postgres.new(
   username: 'example',
   password: 'example',
   database: 'example',
+  # Set `PortOverride` to `-1` to auto-allocate an available port.
   port_override: 19_400,
+  # May be set to one of the ResourceIPAllocationMode constants to select between VNM,
+  # loopback, or default allocation. If not set, will behave as if configured for
+  # 'default'.
+  # For more details on Virtual Networking Mode see documentation here:
+  # https://docs.strongdm.com/admin/clients/client-networking/virtual-networking-mode
+  bind_interface: SDM::ResourceIPAllocationMode::LOOPBACK,
   tags: {"env": "example"}
 )
+
+# You can also specify an explicit loopback IP address to bind to if Loopback IP Ranges
+# are enabled as documented here:
+# https://docs.strongdm.com/admin/clients/client-networking/loopback-ip-ranges
+postgres.bind_interface = "127.0.0.2"
+
+# ...Or if your organization has Virtual Networking Mode enabled,
+# you may configure the resource's bind interface
+# to automatically get an IP allocated upon creation:
+postgres.bind_interface = SDM::ResourceIPAllocationMode::VNM
+
+# ...Or specify an explicit VNM IP address to bind to...
+postgres.bind_interface = "100.64.0.1"
+
+# Your organization can default either to 'loopback' or 'vnm', and
+# SDM::ResourceIPAllocationMode::DEFAULT will honor that.
+postgres.bind_interface = SDM::ResourceIPAllocationMode::DEFAULT
 
 # Create the Datasource
 response = client.resources.create(postgres, deadline: deadline)
