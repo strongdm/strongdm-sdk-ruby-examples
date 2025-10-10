@@ -69,18 +69,23 @@ update_response = client.workflows.update(workflow, deadline: deadline)
 puts 'Successfully updated Workflow Weight.'
 puts "\tWeight: #{update_response.workflow.weight}"
 
-# Update Workflow AutoGrant
-auto = workflow.auto
-workflow.auto_grant = !auto
+# Create an automatic grant approval flow
+approval_flow = SDM::ApprovalWorkflow.new(
+    name: "Auto Grant Example",
+    approval_mode: "automatic"
+)
+approval_flow_response = client.approval_workflows.create(approval_flow, deadline: deadline)
+puts "Successfully created ApprovalWorkflow."
+puts "\tID: #{approval_flow_response.approval_workflow.id}"
+
+# Update Workflow Approval Flow
+workflow.approval_flow_id = approval_flow_response.approval_workflow.id
 update_response = client.workflows.update(workflow, deadline: deadline)
-puts 'Successfully updated Workflow AutoGrant.'
-puts "\tAutoGrant: #{update_response.workflow.auto_grant}"
+puts 'Successfully updated Workflow Approval Flow.'
+puts "\tApproval Flow ID: #{update_response.workflow.approval_flow_id}"
 
 # Update Workflow Enabled
-# The requirements to enable a workflow are that the workflow must be either set
-# up for with auto grant enabled or have one or more WorkflowApprovers created for
-# the workflow.
-workflow.auto_grant = true
+# To enable a workflow, an approval flow must be attached
 workflow.enabled = true
 update_response = client.workflows.update(workflow, deadline: deadline)
 puts 'Successfully updated Workflow Enabled.'

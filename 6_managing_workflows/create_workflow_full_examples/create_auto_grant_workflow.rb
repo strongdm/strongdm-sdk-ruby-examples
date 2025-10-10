@@ -31,11 +31,19 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
+# Create an automatic grant approval flow
+approval_flow = SDM::ApprovalWorkflow.new(
+    name: "Auto Grant Example",
+    approval_mode: "automatic"
+)
+
+approval_flow_response = client.approval_workflows.create(approval_flow, deadline: deadline)
+
 # Define an auto grant Workflow with initial Access Rules
 workflow = SDM::Workflow.new(
   name: 'Ruby Create Auto Grant Full Workflow Example',
   description: 'Ruby Workflow Description',
-  auto_grant: true,
+  approval_flow_id: approval_flow_response.approval_workflow.id,
   enabled: true,
   access_rules: [
     {
