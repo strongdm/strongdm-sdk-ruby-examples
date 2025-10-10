@@ -31,10 +31,43 @@ client = SDM::Client.new(api_access_key, api_secret_key)
 # Create a 30 second deadline
 deadline = Time.now.utc + 30
 
+# Create an approver - used for creating a workflow approver
+approver = SDM::User.new(
+    email: 'ruby-create-workflow-full@example.com',
+    first_name: 'Example',
+    last_name: 'Approver'
+)
+approver_response = client.accounts.create(approver, deadline: deadline)
+approver_id = approver_response.account.id
+
+
+# Build a manual ApprovalWorkflow that references the approver created above.
+approval_workflow = SDM::ApprovalWorkflow.new(
+    name: "Example Manual Approval Workflow",
+    approval_mode: "manual",
+    approval_workflow_steps: [
+        SDM::ApprovalFlowStep.new(
+            quantifier: "any",
+            approvers: [
+                SDM::ApprovalFlowApprover.new(
+                    account_id: approver_id,
+                )
+            ]
+        )
+    ]
+)
+
+approval_workflow_response = client.approval_workflows.create(approval_workflow, deadline: deadline)
+
+puts "Successfully created ApprovalWorkflow."
+puts "\tID: #{approval_workflow_response.approval_workflow.id}"
+puts "\tName: #{approval_workflow_response.approval_workflow.name}"
+
 # Define a manual Workflow with initial Access Rules
 workflow = SDM::Workflow.new(
   name: 'Ruby Create Manual Full Workflow Example',
   description: 'Ruby Workflow Description',
+  approval_flow_id: approval_workflow_response.approval_workflow.id,
   access_rules: [
     {
       "tags": {"env": "dev"},
@@ -50,6 +83,7 @@ workflow_id = workflow.id
 puts 'Successfully created Workflow.'
 puts "\tID: #{workflow_id}"
 puts "\tName: #{workflow_response.workflow.name}"
+puts "\tApproval Flow ID: #{workflow_response.workflow.approval_flow_id}"
 
 # To allow users access to the resources managed by this workflow, you must
 # add workflow roles to the workflow.
@@ -75,33 +109,6 @@ workflow_role_id = workflow_role_response.workflow_role.id
 puts 'Successfully created WorkflowRole.'
 puts "\tID: #{workflow_role_id}"
 
-# To manually enable this workflow, you must add workflow approvers
-# to this workflow.
-# Two steps are needed to add a workflow approver:
-# Step 1: create an Account
-# Step 2: create a WorkflowApprover
-
-# Create an approver - used for creating a workflow approver
-approver = SDM::User.new(
-    email: 'ruby-create-workflow-full@example.com',
-    first_name: 'Example',
-    last_name: 'Approver'
-)
-approver_response = client.accounts.create(approver, deadline: deadline)
-approver_id = approver_response.account.id
-
-# Create the WorkflowApprover
-workflow_approver = SDM::WorkflowApprover.new(
-    workflow_id: workflow_id,
-    approver_id: approver_id,
-)
-workflow_approver_response = client.workflow_approvers.create(workflow_approver, deadline: deadline)
-workflow_approver_id = workflow_approver_response.workflow_approver.id
-
-puts 'Successfully created WorkflowApprover.'
-puts "\tID: #{workflow_approver_id}"
-
-# You can enable this workflow after adding workflow approvers.
 # Update Workflow Enabled
 workflow.enabled = true
 update_response = client.workflows.update(workflow, deadline: deadline)
